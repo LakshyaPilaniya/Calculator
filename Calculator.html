@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gangster Calculator</title>
+  <style>
+    /* Purple and black gradient background */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #000000, #4a148c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      flex-direction: column;
+    }
+    
+    /* Container for floating gangster emojis */
+    .floating-emojis {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none; /* Allows clicks to pass through */
+    }
+
+    .floating-emojis .emoji {
+      position: absolute;
+      font-size: 2.5em;
+      animation: float 5s infinite ease-in-out;
+    }
+    
+    /* Position and delay for each emoji */
+    .floating-emojis .emoji:nth-child(1) {
+      top: 10%;
+      left: 20%;
+      animation-delay: 0s;
+    }
+    .floating-emojis .emoji:nth-child(2) {
+      top: 30%;
+      left: 70%;
+      animation-delay: 1s;
+    }
+    .floating-emojis .emoji:nth-child(3) {
+      top: 60%;
+      left: 40%;
+      animation-delay: 2s;
+    }
+    .floating-emojis .emoji:nth-child(4) {
+      top: 80%;
+      left: 15%;
+      animation-delay: 3s;
+    }
+    .floating-emojis .emoji:nth-child(5) {
+      top: 5%;
+      left: 80%;
+      animation-delay: 4s;
+    }
+    .floating-emojis .emoji:nth-child(6) {
+      top: 50%;
+      left: 10%;
+      animation-delay: 5s;
+    }
+    
+    /* Updated keyframes with both vertical and horizontal movement */
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(10px, -20px); }
+    }
+
+    /* Calculator container with a frosted dark glass aesthetic */
+    .calculator {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      width: 300px;
+      color: #fff;
+      position: relative;
+      z-index: 1;
+    }
+
+    .calculator h1 {
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Display input styling */
+    #result {
+      width: 100%;
+      margin-bottom: 20px;
+      padding: 10px;
+      background: #222;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.5em;
+      text-align: right;
+      color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Button grid styling */
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    /* Button styling with smooth transitions */
+    button {
+      padding: 15px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color: #4a148c;
+      color: white;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    button:hover {
+      background-color: #6a1b9a;
+      transform: scale(1.03);
+    }
+
+    button:active {
+      background-color: #4a148c;
+      transform: scale(0.98);
+    }
+    
+    /* Dual-tone credit text styling using gradient */
+    .credit {
+      font-size: 0.9em;
+      margin-top: 15px;
+      text-align: center;
+      background: linear-gradient(45deg, #4a148c, #000000);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: transparent;
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating gangster emojis -->
+  <div class="floating-emojis">
+    <div class="emoji">😎</div>
+    <div class="emoji">💸</div>
+    <div class="emoji">🔥</div>
+    <div class="emoji">💰</div>
+    <div class="emoji">🎩</div>
+    <div class="emoji">🕶</div>
+  </div>
+
+  <div class="calculator">
+    <h1>Calculator</h1>
+    <input type="text" id="result" placeholder="0" readonly>
+    <div class="buttons">
+      <button onclick="appendNumber('1')">1</button>
+      <button onclick="appendNumber('2')">2</button>
+      <button onclick="appendNumber('3')">3</button>
+      <button onclick="chooseOperation('+')">➕</button>
+      <button onclick="appendNumber('4')">4</button>
+      <button onclick="appendNumber('5')">5</button>
+      <button onclick="appendNumber('6')">6</button>
+      <button onclick="chooseOperation('-')">➖</button>
+      <button onclick="appendNumber('7')">7</button>
+      <button onclick="appendNumber('8')">8</button>
+      <button onclick="appendNumber('9')">9</button>
+      <button onclick="chooseOperation('*')">✖️</button>
+      <button onclick="appendNumber('0')">0</button>
+      <button onclick="calculate()">=</button>
+      <button onclick="clearResult()">C</button>
+      <button onclick="chooseOperation('/')">➗</button>
+    </div>
+    <!-- Credit text under the calculator with dual tone styling -->
+    <p class="credit">Made By Lakshya 🖤</p>
+  </div>
+
+  <script>
+    let currentInput = '';
+
+    function appendNumber(number) {
+      currentInput += number;
+      updateResult(currentInput);
+    }
+
+    function chooseOperation(operation) {
+      currentInput += ' ' + operation + ' ';
+      updateResult(currentInput);
+    }
+
+    function clearResult() {
+      currentInput = '';
+      updateResult('0');
+    }
+
+    function updateResult(value) {
+      document.getElementById('result').value = value;
+    }
+
+    function calculate() {
+      try {
+        const result = eval(currentInput);
+        updateResult(result);
+        currentInput = result.toString();
+      } catch {
+        updateResult('Error');
+      }
+    }
+  </script>
+</body>
+</html>
